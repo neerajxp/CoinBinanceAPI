@@ -39,7 +39,7 @@ namespace CoinBinanceApi
 
             var license = new OpenApiLicense()
             {
-                Name = "Defidecrypt License",
+                Name = "DefiDecrypt License",
                 Url = new Uri("https://defidecrypt.com")
             };
 
@@ -67,8 +67,8 @@ namespace CoinBinanceApi
                 app.UseDeveloperExceptionPage();
             }
 
-            //RouteConfig.Include(app);
             app.UseRouting();
+ 
 
             app.UseAuthorization();
 
@@ -85,7 +85,8 @@ namespace CoinBinanceApi
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json","MyAPI");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json","CoinBinance API");
+                c.RoutePrefix = string.Empty;   //default to swagger UI on startup
             });
 
             app.UseEndpoints(endpoints =>
