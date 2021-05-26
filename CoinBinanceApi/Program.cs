@@ -32,10 +32,8 @@ namespace CoinBinanceApi
             Log.Logger = new LoggerConfiguration()
                 //.ReadFrom.Configuration(ConfigSettings)
                 .Enrich.FromLogContext()
-                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)                
-                .CreateLogger();
-
-            Log.Information("test");
+                .WriteTo.File(@".\logs\logs_.txt", rollingInterval: RollingInterval.Day)                
+                .CreateLogger();             
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(config =>

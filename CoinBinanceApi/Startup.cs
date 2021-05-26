@@ -34,7 +34,7 @@ namespace CoinBinanceApi
             services.AddControllers();
 
             //Add Background Services, Worker Processes
-            AddBackgroundWorkers(services);
+            //AddBackgroundWorkers(services);
 
             //Allow Cors
             services.AddCors(options =>
@@ -170,8 +170,8 @@ namespace CoinBinanceApi
             //Add the Gates Rates Service
             services.AddHostedService<GatesRatesService>();
             //var connectionString = Configuration.GetSection("SQLConnection").Value;
-            var connectionString = "test";
-            Gobal.ConStr = connectionString;
+            //var connectionString = "test";
+           // Global.constrGate= connectionString;
         }
     }
 }

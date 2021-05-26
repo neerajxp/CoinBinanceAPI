@@ -4,21 +4,28 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Startup.xs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="eazfuscator.net" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CoinBinanceApi.Common\CoinBinanceApi.Common.csproj" />
     <ProjectReference Include="..\CoinBinanceApi.DBContext\CoinBinanceApi.DBContext.csproj" />
+    <ProjectReference Include="..\GateAPI\GateAPI.csproj" />
   </ItemGroup>
 
 
