@@ -33,18 +33,19 @@ namespace CoinBinanceApi.WorkerServices
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while(!stoppingToken.IsCancellationRequested)
+            _logger.LogInformation("Rates Retrieving start : " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:MM"));
+            while (!stoppingToken.IsCancellationRequested)
             {                
                 try
-                {
-                   
-
+                {                   
                     Global.constrGate = _config["ConnectionStringGate"];
                     Global.constrLocal = _config["ConnectionStringLocal"];
                     conStr = Global.constrGate;
+                    Global.isLocalMode = 0;
                     if (_config["isLocalMode"] == "1")
                     {
                         conStr = Global.constrLocal;
+                        Global.isLocalMode = 1;
                     }
                     SharedModule sm = new SharedModule(_loggerShared, _config);
                     SqlConnection makeSQLConn = new SqlConnection(conStr);

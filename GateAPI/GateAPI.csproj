@@ -8,4 +8,8 @@
     <PackageReference Include="eazfuscator.net" Version="3.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoinBinanceApi.Common\CoinBinanceApi.Common.csproj" />
+  </ItemGroup>
+
 </Project>

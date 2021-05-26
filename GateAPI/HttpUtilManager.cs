@@ -7,15 +7,19 @@ using System.IO;
 using System.Web;
 using System.Net; 
 using System.Security.Cryptography;
+using CoinBinanceApi.Common;
 
 namespace Com.Gate.Rest
 {
     class HttpUtilManager
     {
-        private static String SECRET = "<Enter Secret>"; //您的API Secret
-        private static String KEY = "<Enter Key>"; //您的API Key
+        private static String SECRET = "<enter secret>"; //您的API Secret
+        private static String KEY = "<enter key>"; //您的API Key
+
+
         private static HttpUtilManager instance = new HttpUtilManager();
         private HttpUtilManager() { }
+
         public static HttpUtilManager getInstance()
         {
             return instance;
@@ -47,6 +51,10 @@ namespace Com.Gate.Rest
             //http连接数限制默认为2，多线程情况下可以增加该连接数，非多线程情况下可以注释掉此行代码
             //ServicePointManager.DefaultConnectionLimit = 500;
             request = WebRequest.Create(url) as HttpWebRequest;
+            if(Global.isLocalMode==0)
+            {
+                request.Proxy = new WebProxy("http://winproxyus1.server.lan:3128", true);
+            }
             request.ProtocolVersion = HttpVersion.Version10;
             request.Method = "GET";
             request.Timeout = 30000;
@@ -72,6 +80,10 @@ namespace Com.Gate.Rest
                 }
             }
             request = (HttpWebRequest)WebRequest.Create(url);
+            if (Global.isLocalMode == 0)
+            {
+                request.Proxy = new WebProxy("http://winproxyus1.server.lan:3128", true);
+            }
             request.Method = requestType;
             request.ContentType = "application/x-www-form-urlencoded";
             request.Headers.Add("Key", KEY);

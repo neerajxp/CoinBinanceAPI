@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CoinBinanceApi.Common;
 using CoinBinanceApi.DBContext;
 using CoinBinanceApi.WorkerServices;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -30,11 +32,12 @@ namespace CoinBinanceApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+        
             //Add Controllers
             services.AddControllers();
 
             //Add Background Services, Worker Processes
-            //AddBackgroundWorkers(services);
+             AddBackgroundWorkers(services);
 
             //Allow Cors
             services.AddCors(options =>
@@ -48,36 +51,9 @@ namespace CoinBinanceApi
                     .Build();
                 });
             });
-
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+             
              services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-
-            //var contact = new OpenApiContact()
-            //{
-            //    Name = "Neeraj Maurya",
-            //    Email = "admin@defidecrypt.com",
-            //    Url = new Uri("https://defidecrypt.com")
-            //};
-
-            //var license = new OpenApiLicense()
-            //{
-            //    Name = "DefiDecrypt License",
-            //    Url = new Uri("https://defidecrypt.com")
-            //};
-
-            //var info = new OpenApiInfo()
-            //{
-            //    Version = "v1",
-            //    Title = "DefiDecrypt API",
-            //    Description = "DefiDecrypt APIs for Cryptocurrency",
-            //    TermsOfService = new Uri("https://defidecrypt.com"),
-            //    Contact = contact,
-            //    License = license
-            //};
-
-
-
+ 
             //Add Swagger
             services.AddSwaggerGen(c =>
             {
