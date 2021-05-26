@@ -1,7 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using CoinBinanceApi.Common;
+using CoinBinanceApi.DBContext;
+using CoinBinanceApi.WorkerServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,40 +25,105 @@ namespace CoinBinanceApi
         }
 
         public IConfiguration Configuration { get; }
+        public object ConnectionStringGetter { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Add Controllers
             services.AddControllers();
-            services.AddCors();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var contact = new OpenApiContact()
+            //Add Background Services, Worker Processes
+            AddBackgroundWorkers(services);
+
+            //Allow Cors
+            services.AddCors(options =>
             {
-                Name = "Neeraj Maurya",
-                Email = "admin@defidecrypt.com",
-                Url = new Uri("https://defidecrypt.com")
-            };
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    // .AllowCredentials()
+                    .Build();
+                });
+            });
 
-            var license = new OpenApiLicense()
-            {
-                Name = "DefiDecrypt License",
-                Url = new Uri("https://defidecrypt.com")
-            };
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            var info = new OpenApiInfo()
-            {
-                Version = "v1",
-                Title = "DefiDecrypt API",
-                Description = "DefiDecrypt APIs for Cryptocurrency",
-                TermsOfService = new Uri("https://defidecrypt.com"),
-                Contact = contact,
-                License = license
-            };
 
+            //var contact = new OpenApiContact()
+            //{
+            //    Name = "Neeraj Maurya",
+            //    Email = "admin@defidecrypt.com",
+            //    Url = new Uri("https://defidecrypt.com")
+            //};
+
+            //var license = new OpenApiLicense()
+            //{
+            //    Name = "DefiDecrypt License",
+            //    Url = new Uri("https://defidecrypt.com")
+            //};
+
+            //var info = new OpenApiInfo()
+            //{
+            //    Version = "v1",
+            //    Title = "DefiDecrypt API",
+            //    Description = "DefiDecrypt APIs for Cryptocurrency",
+            //    TermsOfService = new Uri("https://defidecrypt.com"),
+            //    Contact = contact,
+            //    License = license
+            //};
+
+
+
+            //Add Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", info);
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "DeFiDecrypt API",
+                    Description = "DefiDecrypt APIs for Cryptocurrency",
+                    TermsOfService = new Uri("https://defidecrypt.com"),
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Admin",
+                        Email = "admin@defidecrypt.com",
+                        Url = new Uri("https://defidecrypt.com")
+                    },
+                    License = new OpenApiLicense()
+                    {
+                        Name = "DefiDecrypt License",
+                        Url = new Uri("https://defidecrypt.com")
+                    }
+                });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Enter 'Bearer' [SPACE] and then token in the text input below",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference= new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            },
+                            Scheme="oauth2",
+                            Name="Bearer",
+                            In=ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
             });
         }
 
@@ -67,11 +135,13 @@ namespace CoinBinanceApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
             app.UseRouting();
- 
 
+            //Authorization and Authentication
             app.UseAuthorization();
-
+            //app.UseAuthentication();
+ 
             app.UseCors(
                      x => x.WithOrigins("https://defidecrypt.com")
                      .AllowAnyMethod()
@@ -79,13 +149,13 @@ namespace CoinBinanceApi
                      .AllowAnyHeader()
                     );
 
-            app.UseHttpsRedirection();
 
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json","CoinBinance API");
+                c.DocumentTitle = "DefiDecrypt API";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoinBinance API");
                 c.RoutePrefix = string.Empty;   //default to swagger UI on startup
             });
 
@@ -93,6 +163,15 @@ namespace CoinBinanceApi
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void AddBackgroundWorkers(IServiceCollection services)
+        {
+            //Add the Gates Rates Service
+            services.AddHostedService<GatesRatesService>();
+            //var connectionString = Configuration.GetSection("SQLConnection").Value;
+            var connectionString = "test";
+            Gobal.ConStr = connectionString;
         }
     }
 }
