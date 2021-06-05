@@ -110,7 +110,7 @@ namespace CoinBinanceApi.WorkerServices
                     sm.BulkCopy(dsRates, conStr);
 
                     int newBatch = Convert.ToInt32(currBatch) + 1;
-                    sm.UpdateBatch(newBatch, "GateBatchRates", conStr);
+                    sm.UpdateBatch(newBatch, "CoinGeckoRates", conStr);
 
                     _logger.LogInformation("CoinGecko Rates Retrieved at : " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:MM"));
                     TimeSpan ts = new TimeSpan(0, 0, Interval);
