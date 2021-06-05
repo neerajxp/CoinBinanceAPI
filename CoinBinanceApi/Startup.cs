@@ -145,6 +145,8 @@ namespace CoinBinanceApi
         {
             //Add the Gates Rates Service
             services.AddHostedService<GatesRatesService>();
+            services.AddHostedService<CoinGeckoRatesService>();
+
             //var connectionString = Configuration.GetSection("SQLConnection").Value;
             //var connectionString = "test";
            // Global.constrGate= connectionString;

@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Net;
 using System.Text;
  
 
@@ -126,6 +130,47 @@ namespace CoinBinanceApi.Common
                 return 0;
             }
   
+        }
+
+        public string GetAPICall(string url, int isKeyRequired, string key)
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+                
+                if (Global.isLocalMode == 0)
+                {
+                    request.Proxy = new WebProxy("http://winproxyus1.server.lan:3128", true);
+                }                               
+
+                if (isKeyRequired == 1)
+                {
+                    var API_KEY = "2563a5a6-1274-4943-b0b4-da724381039c";
+                    request.Headers.Add("X-CMC_PRO_API_KEY", API_KEY);
+                }
+
+                request.Headers.Add("Accepts", "application/json");
+                request.Method = "GET";
+                String jsonToReturn = String.Empty;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    jsonToReturn = reader.ReadToEnd();
+                    reader.Close();
+                    dataStream.Close();
+                }
+
+                //string jsonFormatted = JValue.Parse(jsonToReturn).ToString(Formatting.Indented);
+                
+                //var sz = JsonConvert.SerializeObject(ls);           
+                return jsonToReturn;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Exception: GetAPICall() Method " + ex.ToString());
+                return "false";
+            }
         }
     }
 }

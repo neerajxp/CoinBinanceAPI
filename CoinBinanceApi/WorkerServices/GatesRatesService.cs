@@ -42,7 +42,7 @@ namespace CoinBinanceApi.WorkerServices
                     Global.constrLocal = _config["ConnectionStringLocal"];
                     conStr = Global.constrGate;
                     Global.isLocalMode = 0;
-                    if (_config["isLocalMode"] == "1")
+                    if (_config["isLocalMode"] == "1" || System.Net.Dns.GetHostName() == "Cygnet")
                     {
                         conStr = Global.constrLocal;
                         Global.isLocalMode = 1;
@@ -125,7 +125,7 @@ namespace CoinBinanceApi.WorkerServices
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Connetion Exception: " + ex.ToString());
+                    _logger.LogError("GatesRates Connetion Exception: " + ex.ToString());
                 }               
             }
         }
