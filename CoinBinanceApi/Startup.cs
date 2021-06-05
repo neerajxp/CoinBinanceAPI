@@ -144,12 +144,16 @@ namespace CoinBinanceApi
         private void AddBackgroundWorkers(IServiceCollection services)
         {
             //Add the Gates Rates Service
-            services.AddHostedService<GatesRatesService>();
-            services.AddHostedService<CoinGeckoRatesService>();
+            try
+            {
+                services.AddHostedService<GatesRatesService>();
+                services.AddHostedService<CoinGeckoRatesService>();
+            }
+            catch(Exception ex)
+            {
 
-            //var connectionString = Configuration.GetSection("SQLConnection").Value;
-            //var connectionString = "test";
-           // Global.constrGate= connectionString;
+            }
+
         }
     }
 }
