@@ -148,6 +148,7 @@ namespace CoinBinanceApi
             {
                 services.AddHostedService<GatesRatesService>();
                 services.AddHostedService<CoinGeckoRatesService>();
+                services.AddHostedService<CoinGeckoCoinListService>();
             }
             catch(Exception ex)
             {
