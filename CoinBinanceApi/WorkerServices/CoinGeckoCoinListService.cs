@@ -76,8 +76,8 @@ namespace CoinBinanceApi.WorkerServices
                                 drow["CoinId"] = Convert.ToString(item["id"]);
                                 drow["CoinSymbol"] = Convert.ToString(item["symbol"]);
                                 drow["CoinName"] = Convert.ToString(item["name"]);
-                                drow["Platform"] = Convert.ToString(((JProperty)p).Name);
-                                drow["Token"] = Convert.ToString(((JProperty)p).Value);
+                                drow["PlatformName"] = Convert.ToString(((JProperty)p).Name);
+                                drow["TokenAddress"] = Convert.ToString(((JProperty)p).Value);
                                 drow["CreatedDate"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:MM");
                                 dsRates.Tables[0].Rows.Add(drow);
                             }
