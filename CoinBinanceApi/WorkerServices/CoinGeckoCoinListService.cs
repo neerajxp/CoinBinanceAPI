@@ -56,7 +56,7 @@ namespace CoinBinanceApi.WorkerServices
                     DataTable dtMaster = sm.ExecuteQuery("select * from BatchMaster", conStr);
                     DataRow[] drowMaster = dtMaster.Select("ParameterName='CoinGeckoBatchCoinList'");
                     int currBatch = Convert.ToInt32(drowMaster[0]["ParameterValue"]);
-                    drowMaster = dtMaster.Select("ParameterName='CoinGeckoRateIntervalSeconds'");
+                    drowMaster = dtMaster.Select("ParameterName='CoinGeckoCoinListIntervalSeconds'");
                     int Interval = Convert.ToInt32(drowMaster[0]["ParameterValue"]);
                     
                     string url = @"https://api.coingecko.com/api/v3/coins/list?include_platform=true";
