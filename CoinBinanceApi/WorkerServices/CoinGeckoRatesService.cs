@@ -34,8 +34,10 @@ namespace CoinBinanceApi.WorkerServices
             _logger.LogInformation("CoinGecko Rates Retrieving start : " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:MM"));
             while (!stoppingToken.IsCancellationRequested)
             {
+                int g=0;
                 try
                 {
+                    
                     Global.constrGate = _config["ConnectionStringGate"];
                     Global.constrLocal = _config["ConnectionStringLocal"];
                     conStr = Global.constrGate;
@@ -105,9 +107,14 @@ namespace CoinBinanceApi.WorkerServices
                             drow["CreatedDate"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:MM");
                             dsRates.Tables[0].Rows.Add(drow);
                         }
+
+                        g = i;
+                        sm.BulkCopy(dsRates, conStr);
+                        dsRates.Tables[0].Clear();
+                        dsRates.AcceptChanges();
                     }
 
-                    sm.BulkCopy(dsRates, conStr);
+                   // sm.BulkCopy(dsRates, conStr);
 
                     int newBatch = Convert.ToInt32(currBatch) + 1;
                     sm.UpdateBatch(newBatch, "CoinGeckoRates", conStr);
@@ -118,6 +125,7 @@ namespace CoinBinanceApi.WorkerServices
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(g.ToString());
                     _logger.LogError("CoinGecko Connetion Exception: " + ex.ToString());
                 }
             }
